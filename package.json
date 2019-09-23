@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "emulator": "cd C:/Users/oscar/AppData/Local/Android/Sdk/emulator && ./emulator -avd Pixel_3_XL_API_29",
     "android": "react-native run-android",
+    "log-android": "react-native log-android",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
