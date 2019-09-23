@@ -6,37 +6,36 @@
  * @flow
  */
 
-import React, {Fragment} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, View,} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import StartGameScreen from './src/screens/StartGameScreen'
+import GameScreen from './src/screens/GameScreen'
+import Header from './src/components/Header'
 
 const App = () => {
+
+  const [userNumber, setUserNumber] = useState()
+
+  const startGameHandler = selectedNumber => {
+    setUserNumber(selectedNumber)
+  }
+
   return (
-    <View>
-      <Text>Learn More</Text>
-      <Text>
-        Read the docs to discover what to do next:
-      </Text>
+    <View style={styles.screen}>
+      <Header title='Guess a number'/>
+      { !userNumber? 
+        <StartGameScreen onStartGame={startGameHandler}/> :
+        <GameScreen userChoice={userNumber}/> 
+      }
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  
+  screen: {
+    flex: 1
+  }
 });
 
 export default App;
