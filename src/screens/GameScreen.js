@@ -32,7 +32,7 @@ const GameScreen = props => {
     setCurrentGuess(nextNumber)
   }
 
-  return(
+  let winning = (
     <View style={styles.screen}>
       <Text style={styles.title}>Oponent's Guess</Text>
       <ChosenNumber number={currentGuess} />
@@ -42,6 +42,19 @@ const GameScreen = props => {
       </Card>
     </View>
   )
+
+  if( props.userChoice === currentGuess ) {
+    winning = (
+      <View style={styles.screen}>        
+        <Card styles={styles.card}>
+          <Text style={styles.title}>Correct Number:</Text>        
+          <ChosenNumber number={props.userChoice} />
+        </Card>
+      </View>
+    )
+  }
+
+  return winning
 }
 
 const styles = StyleSheet.create({
