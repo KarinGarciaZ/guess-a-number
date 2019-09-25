@@ -1,7 +1,9 @@
-import React, {useState, useRef} from 'react'
-import { StyleSheet, View, Text, Button, Alert }  from 'react-native'
+import React, {useState, useRef, useEffect} from 'react'
+import { StyleSheet, View, Text, ScrollView, Alert }  from 'react-native'
 import ChosenNumber from '../components/ChosenNumber'
 import Card from '../components/Card'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import MainButton from '../components/MainButton'
 
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min)
@@ -13,48 +15,54 @@ const generateRandomBetween = (min, max, exclude) => {
 }
 
 const GameScreen = props => { 
-  let [currentGuess, setCurrentGuess] = useState(generateRandomBetween(1, 100, props.userChoice))
+  const initialGuess = generateRandomBetween(1, 100, userChoice)
+  let [currentGuess, setCurrentGuess] = useState(initialGuess)
+  let [pastGuess, setPastGuess] = useState([initialGuess])
+  let [numOfRounds, setNumOfRounds] = useState(0)
   const currentLow = useRef(1)
   const currentHigh = useRef(100)
 
+  const { userChoice, onGameOver } = props;
+
+  useEffect(() => {
+    if( currentGuess === userChoice )
+      onGameOver(pastGuess.length)
+  },[currentGuess])
+
   const nextGuessHandler = direction => {
-    if((direction === 'lower' && currentGuess < props.userChoice) || (direction === 'greater' && currentGuess > props.userChoice)) {
+    if((direction === 'lower' && currentGuess < userChoice) || (direction === 'greater' && currentGuess > userChoice)) {
       Alert.alert('Dont lie!', 'You know this is wrong...', [{text: 'Close', style: 'cancel'}])
       return
     }
 
     if(direction === 'lower')
-      currentHigh.current = currentGuess
+      currentHigh.current = currentGuess -1
     else 
-      currentLow.current = currentGuess
+      currentLow.current = currentGuess +1
     
     const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess)
-    setCurrentGuess(nextNumber)
+    setCurrentGuess(nextNumber)    
+    setPastGuess(rounds => [nextNumber, ...rounds])
+    //setNumOfRounds(rounds => rounds + 1)
   }
-
-  let winning = (
+  
+  return (
     <View style={styles.screen}>
       <Text style={styles.title}>Oponent's Guess</Text>
       <ChosenNumber number={currentGuess} />
-      <Card styles={styles.card}>
-        <Button title='Lower' onPress={() => nextGuessHandler('lower')} />
-        <Button title='Greater' onPress={() => nextGuessHandler('greater')} />
+      <Card styles={styles.card}>       
+        <MainButton pressed={() => nextGuessHandler('lower')} style={ {width: '25%'}}>
+          <Icon size={20} name="minus" color='#444'/>
+        </MainButton> 
+        <MainButton pressed={() => nextGuessHandler('greater')} style={ {width: '25%'}}>
+          <Icon size={20} name="plus" color='#444'/>
+        </MainButton>
       </Card>
+      <ScrollView>
+        {pastGuess.map( guess => <Card key={guess}><Text>{guess}</Text></Card> )}
+      </ScrollView>
     </View>
   )
-
-  if( props.userChoice === currentGuess ) {
-    winning = (
-      <View style={styles.screen}>        
-        <Card styles={styles.card}>
-          <Text style={styles.title}>Correct Number:</Text>        
-          <ChosenNumber number={props.userChoice} />
-        </Card>
-      </View>
-    )
-  }
-
-  return winning
 }
 
 const styles = StyleSheet.create({
@@ -71,7 +79,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '70%',
     elevation: 10
-  }
+  },
+  card2: {
+    width: '90%',
+    elevation: 10
+  },
 })
 
 export default GameScreen
