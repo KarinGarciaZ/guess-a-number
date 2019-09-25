@@ -11,8 +11,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "expo": "^35.0.0",
+    "expo-font": "^7.0.0",
     "react": "16.8.6",
-    "react-native": "0.60.5"
+    "react-native": "0.60.5",
+    "react-native-vector-icons": "^6.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
