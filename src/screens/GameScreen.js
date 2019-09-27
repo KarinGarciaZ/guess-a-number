@@ -14,6 +14,15 @@ const generateRandomBetween = (min, max, exclude) => {
   return randomNumber
 }
 
+const renderListItem = (guess, numOfRounds) => {
+  return (
+    <Card key={guess} styles={styles.guess}>
+      <Text>Round #{numOfRounds}</Text>
+      <Text>{guess}</Text>
+    </Card>
+  )
+}
+
 const GameScreen = props => { 
   const initialGuess = generateRandomBetween(1, 100, userChoice)
   let [currentGuess, setCurrentGuess] = useState(initialGuess)
@@ -58,9 +67,11 @@ const GameScreen = props => {
           <Icon size={20} name="plus" color='#444'/>
         </MainButton>
       </Card>
-      <ScrollView>
-        {pastGuess.map( guess => <Card key={guess}><Text>{guess}</Text></Card> )}
-      </ScrollView>
+      <View style={styles.guessContainer}>
+        <ScrollView contentContainerStyle={styles.list}>
+          {pastGuess.map( (guess, i) => renderListItem(guess, pastGuess.length - i) )}
+        </ScrollView>
+      </View>
     </View>
   )
 }
@@ -77,13 +88,31 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '70%',
+    width: '90%',
     elevation: 10
   },
   card2: {
     width: '90%',
     elevation: 10
   },
+  guessContainer: {
+    width: '70%',
+    marginVertical: 25,
+    flex: 1
+  },
+  guess: {
+    flexDirection: 'row',   
+    justifyContent: 'space-around', 
+    elevation: 6,
+    margin: 6,
+    padding: 5,
+    width: '70%'
+  },
+  list: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flexGrow: 1
+  }
 })
 
 export default GameScreen
